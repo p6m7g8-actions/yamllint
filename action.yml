@@ -1,0 +1,16 @@
+name: "P6 GHA: Yamllint"
+description: "P6 GHA: Yamllint"
+author: "Philip M. Gollucci"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v5.0.0
+
+    - name: Run yamllint
+      uses: karancode/yamllint-github-action@2.1.1
+      with:
+        yamllint_file_or_dir: "."
+        yamllint_strict: false
+        yamllint_comment: true

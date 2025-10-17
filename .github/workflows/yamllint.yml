@@ -1,0 +1,19 @@
+name: "Yamllint"
+
+on:
+  pull_request: {}
+
+permissions:
+  contents: read
+
+jobs:
+  cspell:
+    name: Yamllint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5.0.0
+
+      - name: Run yamllint
+        uses: ./
