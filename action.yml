@@ -8,6 +8,17 @@ runs:
     - name: Checkout code
       uses: actions/checkout@v5.0.0
 
+    - name: Create yamllint config
+      shell: bash
+      run: |
+        echo '---
+        extends: default
+        rules:
+          line-length:
+            max: 120
+            level: warning
+        ' > .yamllint.yaml
+
     - name: Run yamllint
       uses: karancode/yamllint-github-action@v3.0.0
       with:
