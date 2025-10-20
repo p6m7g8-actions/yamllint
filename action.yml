@@ -2,6 +2,12 @@ name: "P6 GHA: Yamllint"
 description: "P6 GHA: Yamllint"
 author: "Philip M. Gollucci"
 
+inputs:
+  yamllint:
+    description: Runs yamllint check"
+    required: false
+    default: "true"
+
 runs:
   using: "composite"
   steps:
@@ -9,6 +15,7 @@ runs:
       uses: actions/checkout@v5.0.0
 
     - name: Create yamllint config
+      if: ${{ inputs.yamllint == 'true' }}
       shell: bash
       run: |
         echo '---
