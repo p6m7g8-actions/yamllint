@@ -15,19 +15,45 @@ runs:
       uses: p6m7g8-actions/checkout@main
 
     - name: Create yamllint config
+      id: config
       if: ${{ inputs.yamllint == 'true' }}
       shell: bash
       run: |
-        echo '---
+        set -uo pipefail
+
+        # A repo-committed config always wins, and must never be overwritten.
+        # Leaving the path empty lets yamllint do its own discovery in the
+        # workspace, which is where the container action runs.
+        for candidate in .yamllint .yamllint.yaml .yamllint.yml; do
+          if [[ -f "${candidate}" ]]; then
+            echo "Using repo-committed ${candidate}."
+            echo "config_file=" >>"${GITHUB_OUTPUT}"
+            exit 0
+          fi
+        done
+
+        # No repo config: generate the relaxed default outside the workspace so
+        # the working tree stays clean. RUNNER_TEMP is mounted into container
+        # actions and the path is translated automatically.
+        config_file="${RUNNER_TEMP}/p6-yamllint.yaml"
+        cat >"${config_file}" <<'YAMLLINT'
+        ---
         extends: default
         rules:
           line-length:
             max: 120
-            level: warning' > .yamllint.yaml
+            level: warning
+        YAMLLINT
+
+        echo "Generated ${config_file}:"
+        cat "${config_file}"
+        echo "config_file=${config_file}" >>"${GITHUB_OUTPUT}"
 
     - name: Run yamllint
+      if: ${{ inputs.yamllint == 'true' }}
       uses: karancode/yamllint-github-action@v3.0.0
       with:
         yamllint_file_or_dir: "."
         yamllint_strict: false
         yamllint_comment: true
+        yamllint_config_filepath: ${{ steps.config.outputs.config_file }}
