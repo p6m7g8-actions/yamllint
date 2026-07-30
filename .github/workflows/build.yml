@@ -3,6 +3,9 @@ name: Build
 on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review, edited]
+  push:
+    branches:
+      - gh-readonly-queue/**
   merge_group:
     types: [checks_requested]
   workflow_dispatch: {}
