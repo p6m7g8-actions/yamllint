@@ -7,5 +7,5 @@
 
 ```yml
       - name: Build
-        uses: p6m7g8-actions/yamllint@main
+        uses: p6m7g8-actions/p6-yaml-lint@main
 ```
